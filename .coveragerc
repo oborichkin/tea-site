@@ -6,3 +6,4 @@ omit =
     */test_*
     ./venv/*
     run.py
+    start.py
