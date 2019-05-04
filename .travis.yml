@@ -6,16 +6,5 @@ python:
 install:
   - pip install -r requirements.txt  
 
-script: true
+script:
   - nose2
-
-# This returns the coverage and let's coveralls know the coverage percent. 
-# Note that travis will build your system and get the coverage. 
-# It cannot display, therefore coveralls becomes important to get the coverage
-# You can also use after_success
-after_script:
-  - coveralls
- 
-# Using codecov to get coverage
-after_success:
-  - codecov
