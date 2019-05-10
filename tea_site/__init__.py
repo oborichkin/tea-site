@@ -2,7 +2,7 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from tea_site.config import Config
+from tea_site.config import Config, TestConfig
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()

@@ -5,5 +5,5 @@ omit =
     */__init__.py
     */test_*
     ./venv/*
-    run.py
+    debug.py
     start.py

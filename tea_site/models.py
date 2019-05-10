@@ -61,6 +61,7 @@ class Category(db.Model):
 class Test(db.Model):
     __tablename__ = 'test'
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cat_id = db.Column(db.Integer, db.ForeignKey('category.id'))
 
     results = db.relationship('TestResult', backref='test', lazy=True)

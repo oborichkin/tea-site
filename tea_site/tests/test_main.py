@@ -2,14 +2,13 @@ import os
 import unittest
 
 from tea_site import create_app
+from tea_site.config import TestConfig
 
-app = create_app()
+app = create_app(config=TestConfig)
 
 
 class BasicTest(unittest.TestCase):
     def setUp(self):
-        app.config['TESTING'] = True
-        app.config['DEBUG'] = False
         self.app = app.test_client()
 
     def tearDown(self):
