@@ -1,4 +1,5 @@
 from flask import Blueprint
+from tea_site import db
 
 main = Blueprint('main', __name__)
 
