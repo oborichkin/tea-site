@@ -7,3 +7,4 @@ omit =
     ./venv/*
     debug.py
     start.py
+    create_db.py
