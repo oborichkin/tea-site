@@ -3,3 +3,4 @@ __pycache__
 .coverage
 .vscode
 *.pyc
+site.db
