@@ -17,6 +17,9 @@ def create_app(config=Config):
     login_manager.init_app(app)
 
     from tea_site.main.routes import main
+    from tea_site.users.routes import users
 
     app.register_blueprint(main)
+    app.register_blueprint(users)
+
     return app
