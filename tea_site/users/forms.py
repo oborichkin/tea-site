@@ -14,7 +14,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Зарегистрироваться')
 
     def validate_email(self, email):
-        email = User.query.filter_by(email=email.data).first()
+        user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('Эта почта уже привязанна к существующему аккаунту')
 

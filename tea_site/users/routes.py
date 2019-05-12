@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user, logout_user, login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -44,7 +44,7 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash(f"Вход не удался, пожалуйста, проверьте email и пароль", 'danger')
+            flash(f"Вход не удался, пожалуйста, проверьте email и пароль", 'alert alert-danger')
     return render_template("login.html", title='Вход', form=form)
 
 

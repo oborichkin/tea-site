@@ -21,8 +21,8 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(60), nullable=False)
     middle_name = db.Column(db.String(60))
     last_name = db.Column(db.String(60), nullable=False)
-    university = db.Column(db.String(120), nullable=False)
-    group_id = db.Column(db.String(36), nullable=False)
+    university = db.Column(db.String(120))
+    group_id = db.Column(db.String(36))
     password = db.Column(db.String(128), nullable=False)
 
     answers = db.relationship('Answer', backref='author', lazy=True)

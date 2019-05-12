@@ -1,6 +1,9 @@
 {% extends 'empty_layout.html' %}
 {% block content %}
-  <form class="form-signin">
+  <form method="POST" action="" class="form-signin">
+
+    {{ form.hidden_tag() }}
+
     <img
       class="mb-4"
       src="{{ url_for('static', filename='images/placeholder.svg') }}"
@@ -8,50 +11,45 @@
       width="72"
       height="72"
     />
+
     <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
-    <label for="inputEmail" class="sr-only">Email</label>
-    <input
-      type="email"
-      id="inputEmail"
-      class="form-control first_input"
-      placeholder="Email"
-      required=""
-      autofocus=""
-    />
-    <label for="firstName" class="sr-only">Имя</label>
-    <input
-      type="text"
-      id="firstName"
-      class="form-control"
-      placeholder="Имя"
-      required=""
-    />
-    <label for="lastName" class="sr-only">Фамилия</label>
-    <input
-      type="text"
-      id="lastName"
-      class="form-control"
-      placeholder="Фамилия"
-      required=""
-    />
-    <label for="inputPassword" class="sr-only">Пароль</label>
-    <input
-      type="password"
-      id="inputPassword"
-      class="form-control"
-      placeholder="Пароль"
-      required=""
-    />
-    <label for="inputPasswordAgain" class="sr-only">Повторите пароль</label>
-    <input
-      type="password"
-      id="inputPasswordAgain"
-      class="form-control last_input"
-      placeholder="Повторите пароль"
-      required=""
-    />
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-      Создать аккаунт
-    </button>
+
+    {{ form.email.label(class="sr-only") }}
+    {% if form.email.errors %}
+      {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+    {% else %}
+      {{ form.email(class="form-control", placeholder="Email") }}
+    {% endif %}
+
+    {{ form.first_name.label(class="sr-only") }}
+    {% if form.first_name.errors %}
+      {{ form.first_name(class="form-control is-invalid", placeholder="Имя") }}
+    {% else %}
+      {{ form.first_name(class="form-control", placeholder="Имя") }}
+    {% endif %}
+
+    {{ form.last_name.label(class="sr-only") }}
+    {% if form.last_name.errors %}
+      {{ form.last_name(class="form-control is-invalid", placeholder="Фамилия") }}
+    {% else %}
+      {{ form.last_name(class="form-control", placeholder="Фамилия") }}
+    {% endif %}
+
+    {{ form.password.label(class="sr-only") }}
+    {% if form.password.errors %}
+      {{ form.password(class="form-control is-invalid", placeholder="Пароль") }}
+    {% else %}
+      {{ form.password(class="form-control", placeholder="Пароль") }}
+    {% endif %}
+
+    {{ form.confirm_password.label(class="sr-only") }}
+    {% if form.confirm_password.errors %}
+      {{ form.confirm_password(class="form-control is-invalid", placeholder="Повторите пароль") }}
+    {% else %}
+      {{ form.confirm_password(class="form-control", placeholder="Повторите пароль") }}
+    {% endif %}
+
+    {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+
   </form>
 {% endblock content %}

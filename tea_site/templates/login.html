@@ -1,6 +1,9 @@
 {% extends 'empty_layout.html' %}
 {% block content %}
-  <form class="form-signin">
+  <form method="POST" action="" class="form-signin">
+
+    {{ form.hidden_tag() }}
+
     <img
       class="mb-4"
       src="{{ url_for('static', filename='images/placeholder.svg') }}"
@@ -8,29 +11,28 @@
       width="72"
       height="72"
     />
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input
-      type="email"
-      id="inputEmail"
-      class="form-control first_input"
-      placeholder="Email address"
-      required=""
-      autofocus=""
-    />
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input
-      type="password"
-      id="inputPassword"
-      class="form-control last_input"
-      placeholder="Password"
-      required=""
-    />
+
+    <h1 class="h3 mb-3 font-weight-normal">Вход</h1>
+
+    {{ form.email.label(class="sr-only") }}
+    {% if form.email.errors %}
+      {{ form.email(class="form-control is-invalid", placeholder="Email") }}
+    {% else %}
+      {{ form.email(class="form-control", placeholder="Email") }}
+    {% endif %}
+
+    {{ form.password.label(class="sr-only") }}
+    {% if form.password.errors %}
+      {{ form.password(class="form-control is-invalid", placeholder="Пароль") }}
+    {% else %}
+      {{ form.password(class="form-control", placeholder="Пароль") }}
+    {% endif %}
+
     <div class="checkbox mb-3">
-      <label> <input type="checkbox" value="remember-me" /> Remember me </label>
+      {{ form.remember() }}
+      {{ form.remember.label() }}
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-      Sign in
-    </button>
+
+    {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
   </form>
 {% endblock content %}
