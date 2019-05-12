@@ -12,7 +12,12 @@
     {% else %}
     <title>NLP TEA</title>
     {% endif %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <link
       href="{{ url_for('static', filename='css/main.css') }}"
       rel="stylesheet"
@@ -36,29 +41,38 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#"
-                >Home <span class="sr-only">(current)</span></a
-              >
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.home') }}">Главная</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
+              <a class="nav-link" href="{{ url_for('main.about') }}">О нас</a>
             </li>
           </ul>
           <ul class="navbar-nav ml-auto">
+            {% if current_user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="#">Log In</a>
+              <a class="nav-link" href="{{ url_for('users.account') }}">{{
+                current_user.email
+              }}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Register</a>
+              <a class="nav-link" href="{{ url_for('users.logout') }}">Выход</a>
             </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('users.login') }}">Вход</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('users.register') }}"
+                >Регистрация</a
+              >
+            </li>
+            {% endif %}
           </ul>
         </div>
       </nav>
     </header>
-    {% block content %}
-
-    {% endblock content %}
+    {% block content %} {% endblock content %}
     <footer class="footer mt-auto py-3">
       <div class="container">
         <span class="muted">&copy; Oborin Pavel 2019</span>

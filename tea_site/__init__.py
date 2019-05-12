@@ -5,6 +5,8 @@ from tea_site.config import Config, TestConfig
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'alert alert-info'
 
 def create_app(config=Config):
     app = Flask(__name__)
