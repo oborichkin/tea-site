@@ -13,6 +13,7 @@ def create_app(config=Config):
     app.config.from_object(config)
 
     db.init_app(app)
+    db.app = app
     login_manager.init_app(app)
 
     from tea_site.main.routes import main

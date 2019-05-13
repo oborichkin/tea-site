@@ -42,6 +42,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            flash("Вы успешно вошли в аккаунт", 'debug')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
             flash(f"Вход не удался, пожалуйста, проверьте email и пароль", 'alert alert-danger')
@@ -52,4 +53,5 @@ def login():
 @users.route("/logout")
 def logout():
     logout_user()
+    flash("Вы вышли из аккаунта", 'debug')
     return redirect(url_for('main.home'))

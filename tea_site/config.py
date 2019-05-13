@@ -8,5 +8,6 @@ class Config:
 
 class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    WTF_CSRF_ENABLED = False
     TESTING = True
     DEBUG = False
