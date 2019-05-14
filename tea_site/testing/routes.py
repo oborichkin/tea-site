@@ -1,11 +1,4 @@
-from flask import (
-    Blueprint,
-    render_template,
-    abort, flash,
-    redirect,
-    url_for,
-    request
-)
+from flask import Blueprint, render_template, abort, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from tea_site import db
@@ -19,6 +12,8 @@ from tea_site.testing.forms import (
 )
 
 testing = Blueprint("testing", __name__)
+
+# TODO: Категории создают и удаляют только админы
 
 
 @testing.route("/categories")
@@ -40,6 +35,15 @@ def new_category():
     return render_template("create_category.html", form=form)
 
 
+@testing.route("/category/<int:cat_id>/delete", methods=["POST"])
+@login_required
+def delete_category(cat_id):
+    Category.query.get_or_404(id=cat_id).delete()
+    db.session.commit()
+    flash("Category successfully deleted", "alert alert-success")
+    return redirect(url_for("categories"))
+
+
 @testing.route("/tests")
 @login_required
 def all_tests():
@@ -56,6 +60,9 @@ def category_tests(category_id):
         # TODO: Add link to template like 'You can be the first to add'
         abort(404)
     return render_template("tests.html", tests=tests)
+
+
+# TODO: Тесты создают учителя и админы
 
 
 @testing.route("/test/new", methods=["GET", "POST"])
@@ -81,7 +88,7 @@ def create_test():
 def update_test(test_id):
     form = SubmitTestForm()
     test = Test.query.get_or_404(test_id)
-    if not test.draft:
+    if test.author != current_user or not test.draft:
         abort(403)
     # TODO: Вынести валидацию в форму
     if form.validate_on_submit():
@@ -99,6 +106,8 @@ def update_test(test_id):
 def test_add_question(test_id):
     form = CreateQuestion()
     test = Test.query.get_or_404(test_id)
+    if test.author != current_user:
+        abort(403)
     if form.validate_on_submit():
         question = Question(author=current_user, text=form.question_text.data)
         answer = Answer(
@@ -116,10 +125,14 @@ def test_add_question(test_id):
     return render_template("add_question.html", test=test, form=form)
 
 
-@testing.route("/test/<int:test_id>/remove")
+@testing.route("/test/<int:test_id>/delete")
 @login_required
-def remove_test(test_id):
-    Test.query.get_or_404(id=test_id).delete()
+def delete_test(test_id):
+    test = Test.query.get_or_404(id=test_id)
+    if test.author != current_user:
+        abort(403)
+    test.delete()
+    db.session.commit()
     flash("Test successfully deleted", "alert alert-success")
     # TODO: Redirect somewhere else
     return redirect(url_for("main.home"))

@@ -11,6 +11,8 @@ test_to_questions = db.Table(
     db.Column("q_id", db.Integer, db.ForeignKey("question.id")),
 )
 
+# TODO: Поревьювить модельки снова, расставить nullable и каскадинг
+
 
 @login_manager.user_loader
 def load_user(user_id):
