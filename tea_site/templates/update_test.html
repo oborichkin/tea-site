@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!-- Begin page content -->
+<main role="main" class="mt-3">
+  <div class="container">
+      <h1>Создание теста {{ test.name }}</h1>
+      <form action="{{ url_for('testing.test_add_question', test_id=test.id) }}">
+        <button type="submit">+</button>
+     </form>
+
+      {% for q in test.questions %}
+        <p>
+          {{ q.text }}
+          <!--TODO: delete question-->
+        </p>
+      {% endfor %}
+
+      <form action="" method="POST">
+        
+        {{ form.hidden_tag() }}
+
+        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+      </form>
+  </div>
+</main>
+{% endblock content %}

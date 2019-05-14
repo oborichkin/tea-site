@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!-- Begin page content -->
+<main role="main" class="mt-3">
+  <div class="container">
+      <h1>{{ test.name }}</h1>
+      <form action="" method="POST">
+
+        {{ form.hidden_tag() }}
+        
+        {% for q in form.question_forms %}
+          <p>
+            {{ q[0].text }}
+            {% if q[1].errors %}
+              {{ q[1].answer_text(class="form-control is-invalid", placeholder="Ответ") }}
+            {% else %}
+              {{ q[1].answer_text(class="form-control", placeholder="Ответ") }}
+            {% endif %}
+          </p>
+        {% endfor %}
+
+        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+
+      </form>
+  </div>
+</main>
+{% endblock content %}

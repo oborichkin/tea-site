@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!-- Begin page content -->
+<main role="main" class="mt-3">
+  <div class="container">
+      <h1>Создать новый тест</h1>
+      <form action="" method="POST">
+        
+        {{ form.hidden_tag() }}
+
+        {{ form.name.label(class="sr-only") }}
+        {% if form.name.errors %}
+          {{ form.name(class="form-control is-invalid", placeholder="Название") }}
+        {% else %}
+          {{ form.name(class="form-control", placeholder="Название") }}
+        {% endif %}
+        
+        <!-- TODO: Default - select nothing -->
+        {{ form.cat_id.label(class="sr-only") }}
+        {{ form.cat_id(class="form-control", placeholder="Выберите категорию...") }}
+
+        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+      </form>
+  </div>
+</main>
+{% endblock content %}

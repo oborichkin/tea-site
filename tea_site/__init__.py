@@ -18,8 +18,10 @@ def create_app(config=Config):
 
     from tea_site.main.routes import main
     from tea_site.users.routes import users
+    from tea_site.testing.routes import testing
 
     app.register_blueprint(main)
     app.register_blueprint(users)
+    app.register_blueprint(testing)
 
     return app

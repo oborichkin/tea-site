@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!-- Begin page content -->
+<main role="main" class="mt-3">
+  <div class="container">
+      <h1>Добавить вопрос</h1>
+
+      <form action="" method="POST">
+        
+        {{ form.hidden_tag() }}
+
+        {{ form.question_text.label(class="sr-only") }}
+        {% if form.question_text.errors %}
+          {{ form.question_text(class="form-control is-invalid", placeholder="Вопрос") }}
+        {% else %}
+          {{ form.question_text(class="form-control", placeholder="Вопрос") }}
+        {% endif %}
+
+        {{ form.answer_text.label(class="sr-only") }}
+        {% if form.answer_text.errors %}
+          {{ form.answer_text(class="form-control is-invalid", placeholder="Ответ") }}
+        {% else %}
+          {{ form.answer_text(class="form-control", placeholder="Ответ") }}
+        {% endif %}
+
+        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+      </form>
+  </div>
+</main>
+{% endblock content %}

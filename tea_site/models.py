@@ -61,8 +61,10 @@ class Category(db.Model):
 class Test(db.Model):
     __tablename__ = 'test'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     cat_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    draft = db.Column(db.Boolean, default=True, nullable=False)
 
     results = db.relationship('TestResult', backref='test', lazy=True)
 

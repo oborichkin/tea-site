@@ -9,8 +9,8 @@ from tea_site.users.forms import RegistrationForm, LoginForm
 users = Blueprint('users', __name__)
 
 
-@login_required
 @users.route("/account")
+@login_required
 def account():
     return render_template("account.html")
 
@@ -49,8 +49,8 @@ def login():
     return render_template("login.html", title='Вход', form=form)
 
 
-@login_required
 @users.route("/logout")
+@login_required
 def logout():
     logout_user()
     flash("Вы вышли из аккаунта", 'debug')
