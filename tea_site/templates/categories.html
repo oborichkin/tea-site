@@ -3,12 +3,21 @@
 <!-- Begin page content -->
 <main role="main" class="mt-3">
   <div class="container">
-      <h1>Список категорий</h1>
-      <ul>
-        {% for c in categories %}
-          <li>{{ c.name }}</li>
-        {% endfor %}
-      </ul>
+    <h1>Список категорий</h1>
+    <div class="row">
+      <!--TODO: Сделать нормальные отступы-->
+      <!--TODO: Добавить картинки, когда будут-->
+      {% for c in categories %}
+      <div class="col-xs-12 col-sm-2 card">
+        <!-- <img src="" class="card-img-top" alt="category image"> -->
+        <div class="card-body">
+          <h5 class="card-title">{{ c.name }}</h5>
+          <p class="card-text">{{ c.description }}</p>
+          <a href="{{ url_for('testing.category_tests', category_id=c.id) }}" class="btn btn-primary">Перейти</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </main>
 {% endblock content %}

@@ -68,3 +68,7 @@ main>.container {
 .debug {
     display: none;
 }
+
+textarea {
+    resize: none;
+}

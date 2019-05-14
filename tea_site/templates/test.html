@@ -8,15 +8,11 @@
 
         {{ form.hidden_tag() }}
         
-        {% for q in form.question_forms %}
-          <p>
-            {{ q[0].text }}
-            {% if q[1].errors %}
-              {{ q[1].answer_text(class="form-control is-invalid", placeholder="Ответ") }}
-            {% else %}
-              {{ q[1].answer_text(class="form-control", placeholder="Ответ") }}
-            {% endif %}
-          </p>
+        {% for q in test.questions %}
+        <div class="form-group">
+          <label for="{{ q.id }}">{{ q.text }}</label>
+          <textarea required class="form-control" name="{{ q.id }}" id="{{ q.id }}"></textarea>
+        </div>
         {% endfor %}
 
         {{ form.submit(class="btn btn-lg btn-primary btn-block") }}

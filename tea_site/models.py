@@ -47,6 +47,7 @@ class Question(db.Model):
         return f"Question ({self.id})"
 
 
+# TODO: Add images and description to categories
 class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)

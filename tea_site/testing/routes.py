@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, flash, redirect, url_for
+from flask import Blueprint, render_template, abort, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from tea_site import db
@@ -30,14 +30,18 @@ def new_category():
 @testing.route("/tests")
 @login_required
 def all_tests():
-    tests = Test.query.all()
+    tests = Test.query.filter_by(draft=False).all()
     return render_template('tests.html', tests=tests)
 
 
 @testing.route("/tests/<int:category_id>")
 @login_required
-def caregory_test(category_id):
-    tests = Test.query.filter_by(Test.cat_id == category_id)
+def category_tests(category_id):
+    tests = Test.query.filter_by(cat_id=category_id, draft=False).all()
+    if not tests:
+        # TODO: Add to template message that there is no tests yet
+        # TODO: Add link to template like 'You can be the first to add'
+        abort(404)
     return render_template("tests.html", tests=tests)
 
 
@@ -108,12 +112,12 @@ def remove_test(test_id):
 @login_required
 def take_test(test_id):
     test = Test.query.get_or_404(test_id)
-    form = TestForm(test_id)
+    form = TestForm()
     if form.validate_on_submit():
-        for q in form.question_forms:
+        for q in test.questions:
             answer = Answer(author=current_user,
-                            question=q[0],
-                            text=q[1].answer_text.data)
+                            text=request.args.get(q.id),
+                            question=q)
             db.session.add(answer)
         db.session.commit()
         # TODO: Redirect to overview

@@ -33,8 +33,4 @@ class QuestionForm(FlaskForm):
 
 
 class TestForm(FlaskForm):
-    def __init__(self, test_id):
-        super(TestForm, self).__init__()
-        test = Test.query.get(test_id)
-        self.question_forms = [(q, QuestionForm()) for q in test.questions ]
     submit = SubmitField('Отправить ответ')
