@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, abort, flash, redirect, url_for, r
 from flask_login import login_required, current_user
 
 from tea_site import db
+from tea_site.tasks import eval_answer
 from tea_site.models import Category, Test, Question, Answer, TestResult
 from tea_site.testing.forms import (
     CreateQuestion,
@@ -153,6 +154,8 @@ def take_test(test_id):
             answer = Answer(author=current_user, text=text, question=q, result=result)
             db.session.add(answer)
         db.session.commit()
+        for a in result.answers:
+            eval_answer.delay()
         return redirect(url_for("testing.overview_result", result_id=result.id))
     return render_template("test.html", test=test, form=form)
 
