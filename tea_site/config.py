@@ -6,6 +6,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///site.db"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TESTING = False
+    CELERY_BROKER_URL = "redis://localhost:6379/0"
+    CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 
 class TestConfig(Config):
@@ -18,3 +20,6 @@ class TestConfig(Config):
 class ProdConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
+    REDIS_URL = os.environ.get('REDIS_URL')
