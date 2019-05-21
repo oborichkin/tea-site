@@ -1,4 +1,4 @@
-from tea_site import celery
+from tea_site import celery, db
 from tea_site.models import Answer
 
 
@@ -9,4 +9,5 @@ def eval_answer(answer_id):
     sleep(10)
     a = Answer.query.get(answer_id)
     answer.grade = 1
+    db.session.commit()
     return
