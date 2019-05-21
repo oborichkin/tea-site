@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from tea_site import db, login_manager
 from flask import current_app
 from datetime import datetime
@@ -9,6 +11,13 @@ test_to_questions = db.Table(
     db.Model.metadata,
     db.Column("test_id", db.Integer, db.ForeignKey("test.id")),
     db.Column("q_id", db.Integer, db.ForeignKey("question.id")),
+)
+
+result_to_answers = db.Table(
+    "result_to_answers",
+    db.Model.metadata,
+    db.Column("result_id", db.Integer, db.ForeignKey("test_result.id")),
+    db.Column("a_id", db.Integer, db.ForeignKey("answer.id")),
 )
 
 # TODO: Поревьювить модельки снова, расставить nullable и каскадинг
@@ -29,11 +38,18 @@ class User(db.Model, UserMixin):
     university = db.Column(db.String(120))
     group_id = db.Column(db.String(36))
     password = db.Column(db.String(128), nullable=False)
+    image = db.Column(db.String(20), nullable=False, default="default.png")
 
     answers = db.relationship("Answer", backref="author", lazy=True)
     questions = db.relationship("Question", backref="author", lazy=True)
-    tests = db.relationship("Test", backref="author", lazy=True)
-    results = db.relationship("TestResult", backref="author", lazy=True)
+    tests = db.relationship("Test", backref="author", lazy="dynamic")
+    results = db.relationship("TestResult", backref="author", lazy="dynamic")
+
+    def get_need_review(self):
+        need_review = []
+        for q in self.questions:
+            need_review.extend(q.answers.filter_by(reviewed=False).all())
+        return need_review
 
     def __repr__(self):
         return f"User({self.first_name} {self.middle_name} {self.last_name})"
@@ -46,7 +62,7 @@ class Question(db.Model):
     text = db.Column(db.Text, nullable=False)
 
     tests = db.relationship("Test", secondary=test_to_questions, backref="questions")
-    answers = db.relationship("Answer", backref="question")
+    answers = db.relationship("Answer", backref="question", lazy="dynamic")
 
     def __repr__(self):
         return f"Question ({self.id})"
@@ -88,6 +104,10 @@ class Answer(db.Model):
     flagged = db.Column(db.Boolean, default=False)
     reviewed = db.Column(db.Boolean, default=False)
 
+    results = db.relationship(
+        "TestResult", secondary=result_to_answers, backref="answers"
+    )
+
     def __repr__(self):
         return f"Answer ({self.id})"
 
@@ -95,8 +115,9 @@ class Answer(db.Model):
 class TestResult(db.Model):
     __tablename__ = "test_result"
     id = db.Column(db.Integer, primary_key=True)
-    test_id = db.Column(db.Integer, db.ForeignKey("test.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    test_id = db.Column(db.Integer, db.ForeignKey("test.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return f"Test Result ({self.id})"

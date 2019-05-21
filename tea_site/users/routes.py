@@ -6,52 +6,52 @@ from tea_site import db
 from tea_site.models import User
 from tea_site.users.forms import RegistrationForm, LoginForm
 
-users = Blueprint('users', __name__)
+users = Blueprint("users", __name__)
 
 
-@users.route("/account")
-@login_required
-def account():
-    return render_template("account.html")
-
-
-@users.route("/register", methods=['GET', 'POST'])
+@users.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for("main.home"))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    first_name=form.first_name.data,
-                    last_name=form.last_name.data,
-                    password=generate_password_hash(form.password.data))
+        user = User(
+            email=form.email.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            password=generate_password_hash(form.password.data),
+        )
         db.session.add(user)
         db.session.commit()
-        flash(f"Аккаунт был успешно создан", 'success')
-        return redirect(url_for('users.login'))
-    return render_template("register.html", title='Регистрация', form=form)
+        flash(f"Аккаунт был успешно создан", "success")
+        return redirect(url_for("users.login"))
+    return render_template("register.html", title="Регистрация", form=form)
 
 
-@users.route("/login", methods=['GET', 'POST'])
+@users.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for("main.home"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            flash("Вы успешно вошли в аккаунт", 'debug')
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            next_page = request.args.get("next")
+            flash("Вы успешно вошли в аккаунт", "debug")
+            return redirect(next_page) if next_page else redirect(url_for("main.home"))
         else:
-            flash(f"Вход не удался, пожалуйста, проверьте email и пароль", 'alert alert-danger')
-    return render_template("login.html", title='Вход', form=form)
+            flash(
+                f"Вход не удался, пожалуйста, проверьте email и пароль",
+                "alert alert-danger",
+            )
+    return render_template("login.html", title="Вход", form=form)
 
 
 @users.route("/logout")
 @login_required
 def logout():
     logout_user()
-    flash("Вы вышли из аккаунта", 'debug')
-    return redirect(url_for('main.home'))
+    flash("Вы вышли из аккаунта", "debug")
+    return redirect(url_for("main.home"))
+

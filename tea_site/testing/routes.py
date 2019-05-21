@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, flash, redirect, url_for, r
 from flask_login import login_required, current_user
 
 from tea_site import db
-from tea_site.models import Category, Test, Question, Answer
+from tea_site.models import Category, Test, Question, Answer, TestResult
 from tea_site.testing.forms import (
     CreateQuestion,
     CreateTestForm,
@@ -144,11 +144,13 @@ def take_test(test_id):
     test = Test.query.get_or_404(test_id)
     form = TestForm()
     if form.validate_on_submit():
+        result = TestResult(test_id=test_id, author=current_user)
+        db.session.add(result)
         for q in test.questions:
-            answer = Answer(
-                author=current_user, text=request.args.get(q.id), question=q
-            )
+            text = request.args.get(str(q.id))
+            answer = Answer(author=current_user, text=text, question=q)
             db.session.add(answer)
+            result.answers.append(answer)
         db.session.commit()
         # TODO: Redirect to overview
         return redirect(url_for("main.home"))
