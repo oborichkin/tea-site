@@ -22,16 +22,21 @@
         <h3>
           {{ current_user.email }}
         </h3>
-        <div class="row">
-          <div class="col-md-4 col-sm-12">
-            Пройдено тестов 100
-          </div>
-          <div class="col-md-4 col-sm-12">
-            Ожидают ревью 102
-          </div>
-          <div class="col-md-4 col-sm-12">
-            Очки знаний 234
-          </div>
+        <div class="row ml-3 mt-5">
+          <ul class="list-group">
+            <li class="list-group-item">
+                Пройдено тестов
+                <span class="badge badge-primary">{{ current_user.results.all()|length }}</span>
+            </li>
+            <li class="list-group-item">
+                Ожидают ревью
+                <span class="badge badge-warning">{{ need_review|length }}</span>
+            </li>
+            <li class="list-group-item">
+              Очки знаний
+              <span class="badge badge-success">{{ current_user.get_user_score() }}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -39,7 +44,20 @@
       <div class="col-sm-12">
         <h2>Последние результаты</h2>
         {% if current_user.results %}
-          
+        <div class="list-group">
+            {% for r in last_results %}
+              <a href="{{ url_for('testing.overview_result', result_id=r.id) }}">
+                <span class="list-group-item list-group-item-action m-1">
+                {{ r.test.name }}
+                </span>
+              </a>
+            {% endfor %}
+            <a href="{{ url_for('stats.get_all_results') }}">
+              <span class="list-group-item list-group-item-action m-1">
+              Посмотреть все результаты
+              </span>
+            </a>
+          </div>
         {% else %}
           <div class="alert alert-warning" role="alert">
             Вы пока не прошли ни одного теста
@@ -52,11 +70,20 @@
       <div class="col-sm-12">
         <h2>Тесты, ожидающие ревью</h2>
         {% if need_review %}
-            {% for q in need_review %}
-            <div class="list-group">
-              {{ q.text }}
-            </div>
+        <div class="list-group">
+            {% for t in need_review %}
+            <a href="{{ url_for('testing.overview_result', result_id=t.id) }}">
+              <span class="list-group-item list-group-item-action m-1">
+              {{ t.test.name }}
+              </span>
+            </a>
             {% endfor %}
+            <a href="{{ url_for('stats.review') }}">
+              <span class="list-group-item list-group-item-action m-1">
+              Все тесты ожидающие проверки
+              </span>
+            </a>
+          </div>
         {% else %}
           <div class="alert alert-success" role="alert">
             Нет тестов, ожидающих ревью

@@ -71,3 +71,9 @@ main>.container {
 textarea {
     resize: none;
 }
+
+.card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}

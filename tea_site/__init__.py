@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_heroku import Heroku
 from tea_site.config import Config
 
 db = SQLAlchemy()
+heroku = Heroku()
 login_manager = LoginManager()
 login_manager.login_view = "users.login"
 login_manager.login_message_category = "alert alert-info"
@@ -15,6 +17,7 @@ def create_app(config=Config):
 
     db.init_app(app)
     db.app = app
+    heroku.init_app(app)
     login_manager.init_app(app)
 
     from tea_site.main.routes import main

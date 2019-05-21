@@ -9,6 +9,8 @@ from tea_site.testing.forms import (
     CreateCategoryForm,
     TestForm,
     SubmitTestForm,
+    GradeAnswerForm,
+    FlagAnswerForm,
 )
 
 testing = Blueprint("testing", __name__)
@@ -147,11 +149,58 @@ def take_test(test_id):
         result = TestResult(test_id=test_id, author=current_user)
         db.session.add(result)
         for q in test.questions:
-            text = request.args.get(str(q.id))
-            answer = Answer(author=current_user, text=text, question=q)
+            text = request.values.get(str(q.id))
+            answer = Answer(author=current_user, text=text, question=q, result=result)
             db.session.add(answer)
-            result.answers.append(answer)
         db.session.commit()
-        # TODO: Redirect to overview
-        return redirect(url_for("main.home"))
+        return redirect(url_for("testing.overview_result", result_id=result.id))
     return render_template("test.html", test=test, form=form)
+
+
+@testing.route("/result/<int:result_id>/overview")
+@login_required
+def overview_result(result_id):
+    from collections import defaultdict
+
+    result = TestResult.query.get_or_404(result_id)
+    grade_forms = defaultdict()
+    appeal_forms = defaultdict()
+    for a in result.answers:
+        grade_forms[a.id] = GradeAnswerForm()
+        appeal_forms[a.id] = FlagAnswerForm()
+    if (result.author != current_user) and (result.test.author != current_user):
+        abort(403)
+    return render_template(
+        "result.html", result=result, grade_forms=grade_forms, appeal_forms=appeal_forms
+    )
+
+
+@testing.route("/answer/<int:answer_id>/grade", methods=["POST"])
+@login_required
+def grade_answer(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+    if answer.result.test.author != current_user:
+        abort(403)
+    grade = float(request.values.get("grade"))
+    if not 0 <= grade <= 1:
+        flash(
+            "Оценка должна быть в пределах от 0.0 до 1.0 " + str(grade),
+            "alert alert-danger",
+        )
+        return redirect(url_for("testing.overview_result", result_id=answer.result.id))
+    answer.grade = grade
+    answer.flagged = False
+    answer.reviewed = True
+    db.session.commit()
+    return redirect(url_for("testing.overview_result", result_id=answer.result.id))
+
+
+@testing.route("/answer/<int:answer_id>/flag", methods=["POST"])
+@login_required
+def flag_answer(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+    if answer.author != current_user:
+        abort(403)
+    answer.flagged = True
+    db.session.commit()
+    return redirect(url_for("testing.overview_result", result_id=answer.result.id))

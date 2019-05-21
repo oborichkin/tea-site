@@ -13,3 +13,8 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED = False
     TESTING = True
     DEBUG = False
+
+
+class ProdConfig(Config):
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")

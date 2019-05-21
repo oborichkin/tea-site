@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!-- Begin page content -->
+<main role="main" class="mt-3">
+  <div class="container">
+      <h1>{{ result.test.name }}</h1>
+      {% for a in result.answers %}
+      <div class="card mb-2">
+        <div class="card-header">
+          {{ a.question.text }}
+          {% if a.flagged %}
+            <span class="badge badge-danger">Проверить!</span>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Ответ: {{ a.text }}<br />
+            Оценка: 
+            {% if a.grade %}
+              {{'%0.2f'| format(a.grade|float)}}/1.00
+            {% else %}
+              Пока нет оценки
+            {% endif %}
+          </p>
+          <div class="btn-group" role="group">
+            <!--Modal toggle-->
+            <button data-toggle="modal" data-target="#modal_app{{ a.id }}" type="button" class="btn btn-danger">Аппеляция</button>
+            <!--Modal-->
+            <div class="modal fade" id="modal_app{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Подать аппеляцию</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form method="POST" action="{{ url_for('testing.flag_answer', answer_id=a.id) }}">
+                      {{ appeal_forms[a.id].hidden_tag() }}
+                      <div class="modal-body">
+                          Вы уверены?
+                      </div>
+                      <div class="modal-footer">
+                        {{ grade_forms[a.id].submit(class="btn btn-lg btn-primary btn-block") }}
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            <!--Modal toggle-->
+            <button data-toggle="modal" data-target="#modal{{ a.id }}" type="button" class="btn btn-success">Оценить</button>
+            <!--Modal-->
+            <div class="modal fade" id="modal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Оценить ответ</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form method="POST" action="{{ url_for('testing.grade_answer', answer_id=a.id) }}">
+                      {{ grade_forms[a.id].hidden_tag() }}
+                      <div class="modal-body">
+                          {{ grade_forms[a.id].grade() }}
+                      </div>
+                      <div class="modal-footer">
+                        {{ grade_forms[a.id].submit(class="btn btn-lg btn-primary btn-block") }}
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Закрыть</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+  </div>
+</main>
+{% endblock content %}

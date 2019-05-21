@@ -7,8 +7,17 @@ from wtforms import (
     PasswordField,
     SubmitField,
     BooleanField,
+    FloatField,
+    HiddenField,
 )
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    Email,
+    EqualTo,
+    ValidationError,
+    NumberRange,
+)
 from flask_login import current_user
 
 from tea_site.models import Test
@@ -18,6 +27,15 @@ class CreateCategoryForm(FlaskForm):
     name = StringField("Название категории", validators=[DataRequired()])
     submit = SubmitField("Создать")
     # TODO: Name is unique, add validator
+
+
+class GradeAnswerForm(FlaskForm):
+    grade = FloatField(validators=[DataRequired(), NumberRange(min=0, max=1)])
+    submit = SubmitField("Оценить")
+
+
+class FlagAnswerForm(FlaskForm):
+    submit = SubmitField("Подать аппеляцию")
 
 
 class CreateTestForm(FlaskForm):

@@ -17,9 +17,20 @@ if __name__ == "__main__":
             password=generate_password_hash("12345678"),
         )
 
-        cat = Category(name="Физика")
+        cat1 = Category(
+            name="Физика", image="1.jpg", description="Базовые вопросы по физике"
+        )
+        cat2 = Category(
+            name="Зарубежная литература",
+            image="2.jpg",
+            description="Вопросы по зарубежной литературе",
+        )
+        cat3 = Category(name="Алгебра", image="3.jpg", description="Вопросы по алгебре")
+        cat4 = Category(
+            name="Философия", image="4.jpg", description="Вопросы по философии"
+        )
 
-        test = Test(name="Физика №1", category=cat, author=admin, draft=False)
+        test = Test(name="Физика №1", category=cat1, author=admin, draft=False)
         q1 = Question(author=admin, text="Первый вопрос")
         a1 = Answer(
             author=admin,
@@ -48,6 +59,8 @@ if __name__ == "__main__":
         test.questions.append(q2)
         test.questions.append(q3)
 
-        db.session.add_all([admin, cat, test, q1, q2, q3, a1, a2, a3])
+        db.session.add_all(
+            [admin, cat1, cat2, cat3, cat4, test, q1, q2, q3, a1, a2, a3]
+        )
         db.session.commit()
 

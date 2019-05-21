@@ -9,8 +9,8 @@
       <!--TODO: Добавить картинки, когда будут-->
       <!--TODO: Добавить ссылку на добавление категорий-->
       {% for c in categories %}
-      <div class="col-xs-12 col-sm-2 card">
-        <!-- <img src="" class="card-img-top" alt="category image"> -->
+      <div class="card col-md-3 p-1">
+        <img src="{{ c.get_image_path() }}" class="card-img-top" alt="category image">
         <div class="card-body">
           <h5 class="card-title">{{ c.name }}</h5>
           <p class="card-text">{{ c.description }}</p>
