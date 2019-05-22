@@ -8,7 +8,7 @@ def eval_answer(answer_id):
 
     s = Answer.query.get(answer_id)
     t = Answer.query.filter_by(res_id=None, q_id=s.q_id).first()
-    grade = lemmatized_cosine(s, t)
+    grade = lemmatized_cosine(s.text, t.text)
     s.grade = grade
     db.session.commit()
     return
