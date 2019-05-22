@@ -1,4 +1,5 @@
 from werkzeug.security import generate_password_hash
+import pandas as pd
 
 from tea_site import create_app, db
 from tea_site.models import *
@@ -31,37 +32,34 @@ if __name__ == "__main__":
             name="Философия", image="4.jpg", description="Вопросы по философии"
         )
 
-        test = Test(name="Физика №1", category=cat1, author=admin, draft=False)
-        q1 = Question(author=admin, text="Первый вопрос")
-        a1 = Answer(
-            author=admin,
-            question=q1,
-            text="Ответ на первый вопрос",
-            grade=1,
-            reviewed=True,
-        )
-        q2 = Question(author=admin, text="Второй вопрос")
-        a2 = Answer(
-            author=admin,
-            question=q2,
-            text="Ответ на второй вопрос",
-            grade=1,
-            reviewed=True,
-        )
-        q3 = Question(author=admin, text="Третий вопрос")
-        a3 = Answer(
-            author=admin,
-            question=q3,
-            text="Ответ на третий вопрос",
-            grade=1,
-            reviewed=True,
-        )
-        test.questions.append(q1)
-        test.questions.append(q2)
-        test.questions.append(q3)
+        idx = 1
+        que_per_test = 5
+        questions = []
+        df = pd.read_csv("que.csv", sep="|")
+        for _, row in df.iterrows():
+            q = Question(author=admin, text=row["QUESTION"])
+            a = Answer(
+                author=admin,
+                question=q,
+                text=row["TEACHER_ANSWER"],
+                grade=1,
+                reviewed=True,
+            )
+            db.session.add(a)
+            questions.append(q)
+            if que_per_test == 0:
+                test = Test(
+                    name=f"Физика №{idx}", category=cat1, author=admin, draft=False
+                )
+                idx += 1
+                for q in questions:
+                    test.questions.append(q)
+                questions.append(test)
+                db.session.add_all(questions)
+                questions = []
+                que_per_test = 6
+            que_per_test -= 1
 
-        db.session.add_all(
-            [admin, cat1, cat2, cat3, cat4, test, q1, q2, q3, a1, a2, a3]
-        )
+        db.session.add_all([admin, cat1, cat2, cat3, cat4])
         db.session.commit()
 
