@@ -1,13 +1,14 @@
 from tea_site import celery, db
 from tea_site.models import Answer
+from tea_site.nlp.evaluators import lemmatized_cosine
 
 
 @celery.task
 def eval_answer(answer_id):
-    from time import sleep
 
-    sleep(10)
-    a = Answer.query.get(answer_id)
-    a.grade = 1
+    s = Answer.query.get(answer_id)
+    t = Answer.query.filter_by(res_id=None, q_id=s.q_id).first()
+    grade = lemmatized_cosine(s, t)
+    s.grade = grade
     db.session.commit()
     return
