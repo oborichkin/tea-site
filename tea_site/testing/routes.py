@@ -152,8 +152,8 @@ def take_test(test_id):
             answer = Answer(author=current_user, text=text, question=q, result=result)
             db.session.add(answer)
         db.session.commit()
-        # for a in result.answers:
-        #     eval_answer.delay(a.id)
+        for a in result.answers:
+            eval_answer.delay(a.id)
         return redirect(url_for("testing.overview_result", result_id=result.id))
     return render_template("test.html", test=test, form=form)
 
