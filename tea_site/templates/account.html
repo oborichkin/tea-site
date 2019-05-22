@@ -39,7 +39,7 @@
             </li>
             <li class="col-sm-4 list-group-item">
               Очки знаний
-              <span class="badge badge-success">{{ current_user.get_user_score() }}</span>
+              <span class="badge badge-success">{{'%0.2f'| format(current_user.get_user_score()|float)}}</span>
             </li>
         </div>
       </div>
@@ -54,7 +54,7 @@
                 <span style="display: box;" class="list-group-item list-group-item-action m-1">
                 {{ r.test.name }}
                 {% if r.get_status() == 1%}
-                  <span style="float:right;" class="ml-3 badge badge-success">{{ r.get_score() }}</span>
+                  <span style="float:right;" class="ml-3 badge badge-success">{{'%0.2f'| format(r.get_score()|float)}}</span>
                 {% elif r.get_status() == 2 %}
                   <span style="float:right;" class="ml-3 badge badge-primary">Ожидает проверки</span>
                 {% else %}
