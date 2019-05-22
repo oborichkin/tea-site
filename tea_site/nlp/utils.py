@@ -4,6 +4,7 @@ from string import punctuation
 import pandas as pd
 from nltk.stem.snowball import RussianStemmer
 from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
 from pymystem3 import Mystem
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
