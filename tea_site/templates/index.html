@@ -2,11 +2,12 @@
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
   <div class="container">
-    <h1 class="mt-5">Welcome to NLP-TEA</h1>
+    <h1 class="mt-5 mb-5">Welcome to NLP-TEA</h1>
     <!--TODO: Сделать нормальную индексную страницу-->
     <div class="list-group">
       <a href="{{ url_for('testing.categories') }}" class="list-group-item list-group-item-action">Перейти к категориям</a>
       <a href="{{ url_for('testing.all_tests') }}" class="list-group-item list-group-item-action">Перейти ко всем тестам</a>
+      <a href="{{ url_for('stats.account') }}" class="list-group-item list-group-item-action">Перейти в аккаунт</a>
     </div>
   </div>
 </main>

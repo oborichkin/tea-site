@@ -5,9 +5,6 @@
   <div class="container">
     <h1>Список категорий</h1>
     <div class="row">
-      <!--TODO: Сделать нормальные отступы-->
-      <!--TODO: Добавить картинки, когда будут-->
-      <!--TODO: Добавить ссылку на добавление категорий-->
       {% for c in categories %}
       <div class="card col-md-3 p-1">
         <img src="{{ c.get_image_path() }}" class="card-img-top" alt="category image">
@@ -18,6 +15,12 @@
         </div>
       </div>
       {% endfor %}
+      <div class="card col-md-3 p-1">
+        <div class="card-body">
+          <h5 class="card-title">Новая категория</h5>
+          <a href="{{ url_for('testing.new_category') }}" class="btn btn-success">Создать</a>
+        </div>
+      </div>
     </div>
   </div>
 </main>

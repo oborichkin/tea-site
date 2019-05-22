@@ -74,7 +74,7 @@ def get_random_image():
     # TODO: Смотреть в директории стандартных картинок
     import random
 
-    return random.randint(1, 5) + ".jpg"
+    return str(random.randint(1, 5)) + ".jpg"
 
 
 # TODO: Add images and description to categories
@@ -123,6 +123,15 @@ class Answer(db.Model):
         return f"Answer ({self.id})"
 
 
+from enum import Enum
+
+
+class Status(Enum):
+    GRADED = 1
+    AWAITS = 2
+    REVIEW = 3
+
+
 class TestResult(db.Model):
     __tablename__ = "test_result"
     id = db.Column(db.Integer, primary_key=True)
@@ -131,6 +140,18 @@ class TestResult(db.Model):
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     answers = db.relationship("Answer", backref="result", lazy=True)
+
+    def get_status(self):
+        for a in self.answers:
+            if a.grade == None:
+                return 2
+        for a in self.answers:
+            if a.flagged:
+                return 3
+        return 1
+
+    def get_score(self):
+        return sum([a.grade if a.grade else 0 for a in self.answers])
 
     def __repr__(self):
         return f"Test Result ({self.id})"

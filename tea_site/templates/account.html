@@ -19,24 +19,28 @@
           {% endif %}
           {{ current_user.last_name }}
         </h2>
-        <h3>
+        <h3 class="mb-3">
           {{ current_user.email }}
         </h3>
+        {% if current_user.university %}
+          <p>{{ current_user.university }}</p>
+        {% endif %}
+        {% if current_user.group_id %}
+          <p>{{ current_user.group_id }}</p>
+        {% endif %}
         <div class="row ml-3 mt-5">
-          <ul class="list-group">
-            <li class="list-group-item">
+            <li class="col-sm-4 list-group-item">
                 Пройдено тестов
                 <span class="badge badge-primary">{{ current_user.results.all()|length }}</span>
             </li>
-            <li class="list-group-item">
+            <li class="col-sm-4 list-group-item">
                 Ожидают ревью
                 <span class="badge badge-warning">{{ need_review|length }}</span>
             </li>
-            <li class="list-group-item">
+            <li class="col-sm-4 list-group-item">
               Очки знаний
               <span class="badge badge-success">{{ current_user.get_user_score() }}</span>
             </li>
-          </ul>
         </div>
       </div>
     </div>
@@ -47,8 +51,16 @@
         <div class="list-group">
             {% for r in last_results %}
               <a href="{{ url_for('testing.overview_result', result_id=r.id) }}">
-                <span class="list-group-item list-group-item-action m-1">
+                <span style="display: box;" class="list-group-item list-group-item-action m-1">
                 {{ r.test.name }}
+                {% if r.get_status() == 1%}
+                  <span style="float:right;" class="ml-3 badge badge-success">{{ r.get_score() }}</span>
+                {% elif r.get_status() == 2 %}
+                  <span style="float:right;" class="ml-3 badge badge-primary">Ожидает проверки</span>
+                {% else %}
+                  <span style="float:right;" class="ml-3 badge badge-warning">Ожидает ревью</span>
+                {% endif %}
+                <small style="float: right;" class="ml-3 right text-muted">{{ r.date.strftime('%Y-%m-%d') }}</small>
                 </span>
               </a>
             {% endfor %}
@@ -75,6 +87,8 @@
             <a href="{{ url_for('testing.overview_result', result_id=t.id) }}">
               <span class="list-group-item list-group-item-action m-1">
               {{ t.test.name }}
+              <small style="float: right;" class="mr-2 right text-muted">{{ t.date.strftime('%Y-%m-%d') }}</small>
+              <small style="float: right;" class="mr-1 right text-muted">{{ t.author.first_name }} {{ t.author.last_name }}</small>
               </span>
             </a>
             {% endfor %}
@@ -89,6 +103,22 @@
             Нет тестов, ожидающих ревью
           </div>
         {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    {% if in_draft %}
+    <div class="row mt-5 mb-5">
+      <div class="col-sm-12">
+        <h2>Черновики тестов</h2>
+        <div class="list-group">
+            {% for t in in_draft %}
+            <a href="{{ url_for('testing.update_test', test_id=t.id) }}">
+              <span class="list-group-item list-group-item-action m-1">
+              {{ t.name }}
+              </span>
+            </a>
+            {% endfor %}
+          </div>
       </div>
     </div>
     {% endif %}

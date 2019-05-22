@@ -77,3 +77,15 @@ textarea {
     height: 180px;
     object-fit: cover;
 }
+
+.center {
+    text-align: center;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}

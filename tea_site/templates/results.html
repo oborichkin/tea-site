@@ -9,6 +9,14 @@
           <a href="{{ url_for('testing.overview_result', result_id=r.id) }}">
             <span class="list-group-item list-group-item-action m-1">
             {{ r.test.name }}
+            {% if r.get_status() == 1%}
+              <span style="float:right;" class="ml-3 badge badge-success">{{ r.get_score() }}</span>
+            {% elif r.get_status() == 2 %}
+              <span style="float:right;" class="ml-3 badge badge-primary">Ожидает проверки</span>
+            {% else %}
+              <span style="float:right;" class="ml-3 badge badge-warning">Ожидает ревью</span>
+            {% endif %}
+            <small style="float: right;" class="right text-muted">{{ r.date.strftime('%Y-%m-%d') }}</small>
             </span>
           </a>
         {% endfor %}

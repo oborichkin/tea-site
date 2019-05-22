@@ -11,12 +11,14 @@ stats = Blueprint("stats", __name__)
 def account():
     need_review = current_user.get_need_review(5)
     last_results = current_user.results.order_by(TestResult.date).limit(5).all()
+    in_draft = current_user.tests.filter_by(draft=True).all()
     img_file = url_for("static", filename="images/profile_pics/" + current_user.image)
     return render_template(
         "account.html",
         img_file=img_file,
         need_review=need_review,
         last_results=last_results,
+        in_draft=in_draft,
     )
 
 

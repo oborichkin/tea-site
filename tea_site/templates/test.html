@@ -3,21 +3,32 @@
 <!-- Begin page content -->
 <main role="main" class="mt-3">
   <div class="container">
-      <h1>{{ test.name }}</h1>
+      <div class="center col-sm-12 col-md-6 offset-md-3">
+
+      <h1 class="mb-3">{{ test.name }}</h1>
+      
       <form action="" method="POST">
 
         {{ form.hidden_tag() }}
         
         {% for q in test.questions %}
-        <div class="form-group">
-          <label for="{{ q.id }}">{{ q.text }}</label>
-          <textarea required class="form-control" name="{{ q.id }}" id="{{ q.id }}"></textarea>
+        <div class="left text-white bg-info mb-3 card p-3">
+          <div class="form-group">
+            <h5 class="card-title">
+              <label for="{{ q.id }}">{{ q.text }}</label>
+            </h5>
+            <p class="card-text">
+              <textarea required class="form-control" name="{{ q.id }}" id="{{ q.id }}"></textarea>
+            </p>
+          </div>
         </div>
         {% endfor %}
 
-        {{ form.submit(class="btn btn-lg btn-primary btn-block") }}
+        {{ form.submit(class="btn btn-lg btn-outline-success") }}
 
       </form>
+
+      </div>
   </div>
 </main>
 {% endblock content %}

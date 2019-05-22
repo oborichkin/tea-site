@@ -20,13 +20,18 @@ from wtforms.validators import (
 )
 from flask_login import current_user
 
-from tea_site.models import Test
+from tea_site.models import Test, Category
 
 
 class CreateCategoryForm(FlaskForm):
     name = StringField("Название категории", validators=[DataRequired()])
+    desc = TextField("Описание", validators=[DataRequired()])
     submit = SubmitField("Создать")
-    # TODO: Name is unique, add validator
+
+    def validate_name(self, name):
+        cat = Category.query.filter_by(name=name.data).first()
+        if cat:
+            raise ValidationError("Категория с таким именем уже существует")
 
 
 class GradeAnswerForm(FlaskForm):
@@ -36,6 +41,10 @@ class GradeAnswerForm(FlaskForm):
 
 class FlagAnswerForm(FlaskForm):
     submit = SubmitField("Подать аппеляцию")
+
+
+class ApproveAnswer(FlaskForm):
+    submit = SubmitField("Подтвердить оценку")
 
 
 class CreateTestForm(FlaskForm):

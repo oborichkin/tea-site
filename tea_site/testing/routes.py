@@ -12,6 +12,7 @@ from tea_site.testing.forms import (
     SubmitTestForm,
     GradeAnswerForm,
     FlagAnswerForm,
+    ApproveAnswer,
 )
 
 testing = Blueprint("testing", __name__)
@@ -30,11 +31,11 @@ def categories():
 def new_category():
     form = CreateCategoryForm()
     if form.validate_on_submit():
-        cat = Category(name=form.name.data)
+        cat = Category(name=form.name.data, description=form.desc.data)
         db.session.add(cat)
         db.session.commit()
         flash(f"Категория успешно создана", "success")
-        return redirect(url_for("testing.categories"))
+        return redirect(url_for("testing.category_tests", category_id=cat.id))
     return render_template("create_category.html", form=form)
 
 
@@ -57,12 +58,9 @@ def all_tests():
 @testing.route("/tests/<int:category_id>")
 @login_required
 def category_tests(category_id):
+    cat = Category.query.get_or_404(category_id)
     tests = Test.query.filter_by(cat_id=category_id, draft=False).all()
-    if not tests:
-        # TODO: Add to template message that there is no tests yet
-        # TODO: Add link to template like 'You can be the first to add'
-        abort(404)
-    return render_template("tests.html", tests=tests)
+    return render_template("tests.html", tests=tests, cat=cat)
 
 
 # TODO: Тесты создают учителя и админы
@@ -82,7 +80,7 @@ def create_test():
         )
         db.session.add(test)
         db.session.commit()
-        return redirect(url_for("testing.all_tests"))
+        return redirect(url_for("testing.update_test", test_id=test.id))
     return render_template("create_test.html", form=form)
 
 
@@ -100,7 +98,7 @@ def update_test(test_id):
             return redirect(url_for("testing.update_test", test_id=test_id))
         test.draft = False
         db.session.commit()
-        return redirect(url_for("testing.all_tests"))
+        return redirect(url_for("testing.category_tests", category_id=test.cat_id))
     return render_template("update_test.html", test=test, form=form)
 
 
@@ -154,8 +152,8 @@ def take_test(test_id):
             answer = Answer(author=current_user, text=text, question=q, result=result)
             db.session.add(answer)
         db.session.commit()
-        for a in result.answers:
-            eval_answer.delay(a.id)
+        # for a in result.answers:
+        #     eval_answer.delay(a.id)
         return redirect(url_for("testing.overview_result", result_id=result.id))
     return render_template("test.html", test=test, form=form)
 
@@ -168,13 +166,19 @@ def overview_result(result_id):
     result = TestResult.query.get_or_404(result_id)
     grade_forms = defaultdict()
     appeal_forms = defaultdict()
+    approve_forms = defaultdict()
     for a in result.answers:
         grade_forms[a.id] = GradeAnswerForm()
         appeal_forms[a.id] = FlagAnswerForm()
+        approve_forms[a.id] = ApproveAnswer()
     if (result.author != current_user) and (result.test.author != current_user):
         abort(403)
     return render_template(
-        "result.html", result=result, grade_forms=grade_forms, appeal_forms=appeal_forms
+        "result.html",
+        result=result,
+        grade_forms=grade_forms,
+        appeal_forms=appeal_forms,
+        approve_forms=approve_forms,
     )
 
 
@@ -205,5 +209,19 @@ def flag_answer(answer_id):
     if answer.author != current_user:
         abort(403)
     answer.flagged = True
+    db.session.commit()
+    return redirect(url_for("testing.overview_result", result_id=answer.result.id))
+
+
+@testing.route("/answer/<int:answer_id>/approve", methods=["POST"])
+@login_required
+def approve_answer(answer_id):
+    answer = Answer.query.get_or_404(answer_id)
+    if answer.result.test.author != current_user:
+        abort(403)
+    if not answer.grade:
+        answer.grade = 0
+    answer.flagged = False
+    answer.reviewed = True
     db.session.commit()
     return redirect(url_for("testing.overview_result", result_id=answer.result.id))

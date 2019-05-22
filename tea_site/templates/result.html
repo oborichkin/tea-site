@@ -16,13 +16,14 @@
           <p class="card-text">
             Ответ: {{ a.text }}<br />
             Оценка: 
-            {% if a.grade %}
+            {% if a.grade != None %}
               {{'%0.2f'| format(a.grade|float)}}/1.00
             {% else %}
               Пока нет оценки
             {% endif %}
           </p>
           <div class="btn-group" role="group">
+            {% if current_user == result.author %}
             <!--Modal toggle-->
             <button data-toggle="modal" data-target="#modal_app{{ a.id }}" type="button" class="btn btn-danger">Аппеляция</button>
             <!--Modal-->
@@ -41,7 +42,36 @@
                           Вы уверены?
                       </div>
                       <div class="modal-footer">
-                        {{ grade_forms[a.id].submit(class="btn btn-lg btn-primary btn-block") }}
+                        {{ appeal_forms[a.id].submit(class="btn btn-outline-success") }}
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if current_user == result.test.author %}
+            <!--Modal toggle-->
+            <button data-toggle="modal" data-target="#approve_modal{{ a.id }}" type="button" class="btn btn-info">Подтвердить оценку</button>
+            <!--Modal-->
+            <div class="modal fade" id="approve_modal{{ a.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Подтвердить оценку</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form method="POST" action="{{ url_for('testing.approve_answer', answer_id=a.id) }}">
+                      {{ approve_forms[a.id].hidden_tag() }}
+                      <div class="modal-body">
+                          Данное действие подтвердит текущую оценку или поставит 0, если оценка еще не выставлена.
+                          Вы уверены?
+                      </div>
+                      <div class="modal-footer">
+                        {{ approve_forms[a.id].submit(class="btn btn-outline-success") }}
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
                       </div>
                     </form>
@@ -66,13 +96,15 @@
                           {{ grade_forms[a.id].grade() }}
                       </div>
                       <div class="modal-footer">
-                        {{ grade_forms[a.id].submit(class="btn btn-lg btn-primary btn-block") }}
+                        {{ grade_forms[a.id].submit(class="btn btn-outline-success") }}
                         <button type="button" class="btn btn-success" data-dismiss="modal">Закрыть</button>
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
+            {% endif %}
+              
           </div>
         </div>
       </div>
