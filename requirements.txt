@@ -44,7 +44,7 @@ pylint-flask==0.6
 pylint-plugin-utils==0.5
 pymystem3==0.2.0
 python-dateutil==2.8.0
-pytz==2019.1
+pytz==2019.2
 redis==3.2.1
 requests==2.21.0
 scikit-learn==0.21.1
